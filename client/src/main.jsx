@@ -4,6 +4,33 @@ import { BookOpen, Brain, CheckCircle2, FileText, Home, MessageSquare, Sparkles,
 import { api, clearToken, getToken, setToken } from "./lib/api";
 import "./styles.css";
 
+const demoLearnerState = {
+  name: "Demo Student",
+  goals: ["Build strong AI/ML foundations", "Prepare for coding interviews"],
+  level: "intermediate",
+  focusSubjects: ["AI/ML", "DSA", "Operating Systems"],
+  topics: {
+    "Machine Learning Basics": { covered: 70, quizAverage: 78 },
+    "Neural Networks": { covered: 42, quizAverage: 61 },
+    "Dynamic Programming": { covered: 55, quizAverage: 58 },
+    "DBMS Transactions": { covered: 35, quizAverage: 64 }
+  },
+  weakAreas: ["backpropagation intuition", "dynamic programming state design", "normalization in DBMS"],
+  recentQuizScores: [
+    { topic: "Gradient Descent", score: 72, date: "2026-08-19" },
+    { topic: "DP Knapsack", score: 56, date: "2026-08-18" }
+  ],
+  uploads: [],
+  quizHistory: []
+};
+
+const demoUser = {
+  id: "demo",
+  name: "Demo Student",
+  email: "demo@student.local",
+  learnerState: demoLearnerState
+};
+
 const tabs = [
   { id: "dashboard", label: "Dashboard", icon: Home },
   { id: "assistant", label: "Assistant", icon: MessageSquare },
@@ -187,10 +214,10 @@ function ProgressSnapshot({ state }) {
 }
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(demoUser);
   const [tab, setTab] = useState("dashboard");
-  const [bootError, setBootError] = useState("");
   useEffect(() => {
+    if (!getToken()) setToken("demo-session");
     const startDemoSession = async () => {
       try {
         if (getToken()) {
@@ -202,8 +229,8 @@ function App() {
         setToken(data.token);
         setUser(data.user);
       } catch (err) {
-        clearToken();
-        setBootError(err.message);
+        setToken("demo-session");
+        setUser(demoUser);
       }
     };
     startDemoSession();
@@ -216,15 +243,6 @@ function App() {
     if (tab === "progress") return <Progress user={user} refreshUser={refreshUser} />;
     return <Dashboard user={user} setTab={setTab} />;
   }, [tab, user]);
-  if (!user) {
-    return (
-      <main className="loading-page">
-        <div className="brand-mark"><Brain size={26} /></div>
-        <h1>Adaptive Learning Intelligence</h1>
-        <p>{bootError || "Opening your learning home..."}</p>
-      </main>
-    );
-  }
   return (
     <main className="app-shell">
       <aside className="sidebar">

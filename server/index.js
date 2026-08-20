@@ -37,11 +37,24 @@ app.use(express.json({ limit: "1mb" }));
 async function auth(req, res, next) {
   const token = req.headers.authorization?.replace("Bearer ", "");
   const db = await readDb();
-  const email = db.sessions[token];
-  if (!token || !email || !db.users[email]) return res.status(401).json({ error: "Please log in again." });
+  const email = token === "demo-session" ? "demo@student.local" : db.sessions[token];
+  const demoEmail = "demo@student.local";
+  const activeEmail = email || "";
+  if (!activeEmail) return res.status(401).json({ error: "Please log in again." });
+  if (!db.users[activeEmail]) {
+    db.users[activeEmail] = {
+      id: crypto.randomUUID(),
+      name: "Demo Student",
+      email: activeEmail,
+      password: "",
+      learnerState: defaultLearnerState("Demo Student"),
+      createdAt: new Date().toISOString()
+    };
+    await writeDb(db);
+  }
   req.db = db;
-  req.user = db.users[email];
-  req.email = email;
+  req.user = db.users[activeEmail];
+  req.email = activeEmail;
   next();
 }
 
