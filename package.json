@@ -1,0 +1,30 @@
+{
+  "name": "adaptive-learning-ai",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/index.js",
+    "client": "vite --host 127.0.0.1 --port 5173 client",
+    "build": "vite build client",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 client"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "framer-motion": "^11.18.2",
+    "lucide-react": "^0.468.0",
+    "groq-sdk": "^0.15.0",
+    "multer": "^2.0.2",
+    "pdf-parse": "^1.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tesseract.js": "^5.1.1",
+    "vite": "^6.0.7"
+  },
+  "devDependencies": {}
+}
